@@ -23,7 +23,7 @@ module "api_gateway" {
   source = "./modules/api_gateway"
 
   domain              = "${var.domain}"
-  subdomain           = "lambda-sqs-example"
+  subdomain           = "lambda-sqs"
   certificate_arn     = "${var.certificate_arn}"
   lambda_arn          = "${aws_lambda_function.producer.arn}"
   consumer_lambda_arn = "${aws_lambda_function.consumer.arn}"

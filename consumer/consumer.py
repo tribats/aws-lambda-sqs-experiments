@@ -7,18 +7,15 @@ def handler(event, context):
     queue_name = queue_arn.split(':')[-1]
     sqs = boto3.resource('sqs')
     queue = sqs.get_queue_by_name(QueueName=queue_name)
+    message_list = []
 
-    for message in queue.receive_messages(AttributeNames=['MessageGroupId'], MaxNumberOfMessages=1):
+    for message in queue.receive_messages(AttributeNames=['MessageGroupId'], MaxNumberOfMessages=10):
         body = message.body
         group = message.attributes['MessageGroupId']
+        message_list.append({ 'body': body, 'group': group })
         message.delete()
 
-        return {
-            'statusCode': 200,
-            'body': json.dumps(
-                'MessageGroupId: {}, Message: {}'.format(
-                    group,
-                    body
-                )
-            )
-        }
+    return {
+        'statusCode': 200,
+        'body': json.dumps(message_list)
+    }
